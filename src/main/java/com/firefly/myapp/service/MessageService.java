@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MessageService {
@@ -14,13 +15,14 @@ public class MessageService {
     MessageRepository messageRepository;
 
     public List<Messages> findAllMessages() {
-        List<Messages> messages = new ArrayList<Messages>();
+        List<Messages> messages = new ArrayList<>();
         messageRepository.findAll().forEach(messages::add);
         return messages;
     }
 
     public Messages findMessageById(int id) {
-        return messageRepository.findById(id).get();
+        Optional<Messages> optionalMessages = messageRepository.findById(id);
+        return optionalMessages.orElse(null);
     }
 
     public void saveOrUpdate(Messages messages) {
