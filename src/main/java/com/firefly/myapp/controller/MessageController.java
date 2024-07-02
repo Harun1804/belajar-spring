@@ -1,8 +1,10 @@
 package com.firefly.myapp.controller;
 
+import com.firefly.myapp.dto.MessageDTO;
 import com.firefly.myapp.model.Messages;
 import com.firefly.myapp.service.MessageService;
 import com.firefly.myapp.utils.ResponseFormatter;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,18 +33,18 @@ public class MessageController {
     }
 
     @PostMapping
-    private ResponseFormatter<Void> store(@RequestBody Messages messages)
+    private ResponseFormatter<Void> store(@Valid @RequestBody MessageDTO messages)
     {
-        messageService.saveOrUpdate(messages);
+        messageService.saveOrUpdate(messages.toMessages());
         return new ResponseFormatter<>(true, "Message Has Been Created");
     }
 
     @PutMapping("/{id}")
-    private ResponseFormatter<Void> update(@RequestBody Messages messages, @PathVariable("id") int id)
+    private ResponseFormatter<Void> update(@Valid @RequestBody MessageDTO messages, @PathVariable("id") int id)
     {
         Messages message = messageService.findMessageById(id);
         if (message != null) {
-            messageService.update(messages, id);
+            messageService.update(messages.toMessages(), id);
             return new ResponseFormatter<>(true, "Message Has Been Updated");
         } else {
             return new ResponseFormatter<>(false, "Message Not Found");
